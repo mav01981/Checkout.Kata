@@ -16,6 +16,5 @@ namespace Checkout.Kata
         {
             return this.Offers;
         }
-
     }
 }

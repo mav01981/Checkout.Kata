@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Checkout.Kata
 {
@@ -28,6 +27,5 @@ namespace Checkout.Kata
             Products.Add(product);
             this.Total = _discountCalculator.Calculate(Products);
         }
- 
     }
 }
