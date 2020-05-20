@@ -4,32 +4,16 @@ using System.Linq;
 
 namespace Checkout.Kata
 {
-    public class Checkout : ICheckout
+    public class DiscountCalculator : IDiscountCalculator
     {
-        private readonly IProductValidator _productValidator;
         private readonly IOfferProvider _offerProvider;
-        private List<Item> Products = new List<Item>();
 
-        public decimal Total { get; set; }
-
-        public Checkout(IProductValidator productValidator, IOfferProvider offerProvider)
+        public DiscountCalculator(IOfferProvider offerProvider)
         {
-            _productValidator = productValidator;
             _offerProvider = offerProvider;
         }
 
-        public void Scan(Item product)
-        {
-            if (!_productValidator.IsProductValid(product.SKU))
-            {
-                throw new ArgumentNullException(nameof(product));
-            }
-
-            Products.Add(product);
-            this.Total = CalculateTotal(Products);
-        }
- 
-        private decimal CalculateTotal(List<Item> products)
+        public decimal Calculate(List<Item> products)
         {
             decimal total = 0;
 
@@ -63,3 +47,4 @@ namespace Checkout.Kata
         }
     }
 }
+
