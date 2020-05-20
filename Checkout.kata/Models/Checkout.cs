@@ -20,7 +20,7 @@ namespace Checkout.Kata
 
         public void Scan(Item product)
         {
-            if (_productValidator.IsProductValid(product.SKU))
+            if (!_productValidator.IsProductValid(product.SKU))
             {
                 throw new ArgumentNullException(nameof(product));
             }

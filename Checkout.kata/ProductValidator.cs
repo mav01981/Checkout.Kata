@@ -17,7 +17,7 @@ namespace Checkout.Kata
 
         public bool IsProductValid(string sku)
         {
-            return products.FirstOrDefault(x => x.SKU == sku) == null;
+            return products.FirstOrDefault(x => x.SKU == sku) != null;
         }
     }
 }
