@@ -7,7 +7,6 @@ namespace Checkout.Kata
     {
         private readonly IOfferProvider _offerProvider;
 
-
         public DiscountCalculator(IOfferProvider offerProvider)
         {
             _offerProvider = offerProvider;
@@ -17,9 +16,8 @@ namespace Checkout.Kata
         {
             decimal total = 0;
             var offers = _offerProvider.GetOffers();
-            var totalProductPriceWithNoDiscounts = products.Where(p => offers.All(o => o.SKU != p.SKU)).Select(x => x.UnitPrice).Sum();
 
-            total += ApplyDiscount(products, offers) + totalProductPriceWithNoDiscounts;
+            total += ApplyDiscount(products, offers);
 
             return total;
         }
@@ -27,7 +25,7 @@ namespace Checkout.Kata
         private decimal ApplyDiscount(IEnumerable<Item> products, IEnumerable<Discount> offers)
         {
             decimal total = 0;
-
+             
             foreach (var offer in offers)
             {
                 var product = products.FirstOrDefault(x => x.SKU == offer.SKU);
@@ -35,9 +33,9 @@ namespace Checkout.Kata
                 {
                     int productCount = products.Where(x => x.SKU == offer.SKU).Count();
                     var offerCount = productCount / offer.Quantity;
-                    bool validOffer = offerCount >= 1;
+                    bool isDiscount = offerCount >= 1;
 
-                    if (validOffer)
+                    if (isDiscount)
                     {
                         total += (offerCount * offer.OfferPrice);
                         total += (productCount % offer.Quantity) * product.UnitPrice;
@@ -48,6 +46,9 @@ namespace Checkout.Kata
                     }
                 }
             }
+
+            total += products.Where(p => offers.All(o => o.SKU != p.SKU)).Select(x => x.UnitPrice).Sum();
+
             return total;
         }
     }
