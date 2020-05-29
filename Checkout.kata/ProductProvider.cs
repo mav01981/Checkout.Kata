@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Checkout.Kata
 {
-    public class ProductValidator : IProductValidator
+    public class ProductProvider : IProductProvider
     {
         private IEnumerable<Item> products => new Item[]
         {
@@ -13,11 +13,11 @@ namespace Checkout.Kata
            new Item {SKU = "D15", UnitPrice =0.90m } ,
         };
 
-        public ProductValidator() { }
+        public ProductProvider() { }
 
-        public bool IsProductValid(string sku)
+        public Item Get(string sku)
         {
-            return products.FirstOrDefault(x => x.SKU == sku) != null;
+            return products.FirstOrDefault(x => x.SKU == sku);
         }
     }
 }

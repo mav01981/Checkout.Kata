@@ -3,6 +3,6 @@
     public interface ICheckout
     {
         decimal Total { get; }
-        void Scan(Item product);
+        void Scan(string sku);
     }
 }

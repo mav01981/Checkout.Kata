@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Checkout.Kata
@@ -16,8 +15,16 @@ namespace Checkout.Kata
         public decimal Calculate(List<Item> products)
         {
             decimal total = 0;
-
             var offers = _offerProvider.GetOffers();
+
+            total += ApplyDiscount(products, offers);
+            total += ApplyProductPrice(products.Where(p => offers.All(o => o.SKU != p.SKU)));
+            return total;
+        }
+
+        private decimal ApplyDiscount(IEnumerable<Item> products, IEnumerable<Discount> offers)
+        {
+            decimal total = 0;
 
             foreach (var offer in offers)
             {
@@ -26,7 +33,9 @@ namespace Checkout.Kata
                 {
                     int productCount = products.Where(x => x.SKU == offer.SKU).Count();
                     var offerCount = productCount / offer.Quantity;
-                    if (offerCount >= 1)
+                    bool validOffer = offerCount >= 1;
+
+                    if (validOffer)
                     {
                         total += (offerCount * offer.OfferPrice);
                         total += (productCount % offer.Quantity) * product.UnitPrice;
@@ -37,12 +46,17 @@ namespace Checkout.Kata
                     }
                 }
             }
-            var productsNotInOffer = products.Where(x => !offers.Select(X => X.SKU).ToArray().Contains(x.SKU));
-            foreach (var product in productsNotInOffer)
+            return total;
+        }
+
+        private decimal ApplyProductPrice(IEnumerable<Item> products)
+        {
+            decimal total = 0;
+
+            foreach (var product in products)
             {
                 total += product.UnitPrice;
             }
-
             return total;
         }
     }

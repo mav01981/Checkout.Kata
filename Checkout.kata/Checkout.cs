@@ -5,27 +5,28 @@ namespace Checkout.Kata
 {
     public class Checkout : ICheckout
     {
-        private readonly IProductValidator _productValidator;
+        private readonly IProductProvider _productService;
         private readonly IDiscountCalculator _discountCalculator;
-        private List<Item> Products = new List<Item>();
+        private readonly List<Item> products = new List<Item>();
 
-        public decimal Total { get; set; }
+        public decimal Total => _discountCalculator.Calculate(products);
 
-        public Checkout(IProductValidator productValidator, IDiscountCalculator discountCalculator)
+        public Checkout(IProductProvider productService, IDiscountCalculator discountCalculator)
         {
-            _productValidator = productValidator;
+            _productService = productService;
             _discountCalculator = discountCalculator;
         }
 
-        public void Scan(Item product)
+        public void Scan(string sku)
         {
-            if (!_productValidator.IsProductValid(product.SKU))
+            var product = _productService.Get(sku);
+
+            if (product == null)
             {
-                throw new ArgumentNullException(nameof(product));
+                throw new Exception($"Product not found. {sku}");
             }
 
-            Products.Add(product);
-            this.Total = _discountCalculator.Calculate(Products);
+            products.Add(product);
         }
     }
 }
