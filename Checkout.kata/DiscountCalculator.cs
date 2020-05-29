@@ -17,8 +17,8 @@ namespace Checkout.Kata
             decimal total = 0;
             var offers = _offerProvider.GetOffers();
 
-            total += ApplyDiscount(products, offers);
-            total += ApplyProductPrice(products.Where(p => offers.All(o => o.SKU != p.SKU)));
+            total += ApplyDiscount(products, offers) + products.Where(p => offers.All(o => o.SKU != p.SKU)).Select(x => x.UnitPrice).Sum();
+
             return total;
         }
 
@@ -45,17 +45,6 @@ namespace Checkout.Kata
                         total += product.UnitPrice * productCount;
                     }
                 }
-            }
-            return total;
-        }
-
-        private decimal ApplyProductPrice(IEnumerable<Item> products)
-        {
-            decimal total = 0;
-
-            foreach (var product in products)
-            {
-                total += product.UnitPrice;
             }
             return total;
         }
