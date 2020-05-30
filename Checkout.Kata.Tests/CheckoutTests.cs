@@ -59,6 +59,27 @@ namespace Checkout.Kata.Tests
             Assert.Equal(1.3m, checkout.Total);
         }
 
+        [Fact(DisplayName = "4 Items at checkout with discount applied for SKU A99 at 1.30 discount + 0.50")]
+        [Trait("Checkout", "Scan")]
+        public void Scan4Items_AtCheckout_WithDiscount()
+        {
+            var checkout = new Checkout(productProvider, discountCalculator);
+            var shoppingBasket = new List<string>
+            {
+                 "A99",
+                 "A99",
+                 "A99",
+                 "A99",
+            };
+
+            foreach (var item in shoppingBasket)
+            {
+                checkout.Scan(item);
+            }
+
+            Assert.Equal(1.8m, checkout.Total);
+        }
+
         [Fact(DisplayName = "3 Items at checkout in random order discount applied.")]
         [Trait("Checkout", "Scan")]
         public void ScanItem_AtCheckout_InRandomOrderApplyDiscount()
