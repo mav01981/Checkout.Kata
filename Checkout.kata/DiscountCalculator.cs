@@ -14,20 +14,20 @@ namespace Checkout.Kata
 
         public decimal Calculate(List<Item> products)
         {
-            return products.GroupBy(g => g.SKU)
-                .Select(g => ApplyDiscount(g.Key, g.Select(x => x.UnitPrice).First(), g.Count())).Sum();
+            var offers = _offerProvider.GetOffers();
 
+            return products.GroupBy(g => g.SKU)
+                .Select(g => ApplyDiscount(offers, g.Select(x => x).First(), g.Count())).Sum();
         }
 
-        private decimal ApplyDiscount(string sku, decimal price, int count)
+        private decimal ApplyDiscount(IEnumerable<Discount> offers, Item item, int count)
         {
             decimal total = 0;
-            var offers = _offerProvider.GetOffers();
-            var selectedOffer = offers.FirstOrDefault(x => x.SKU == sku && count >= x.Quantity);
+            var selectedOffer = offers.FirstOrDefault(x => x.SKU == item.SKU && count >= x.Quantity);
 
             total += selectedOffer != null
-                ? selectedOffer.OfferPrice + ((count % selectedOffer.Quantity) * price)
-                : (price * count);
+                ? selectedOffer.OfferPrice + ((count % selectedOffer.Quantity) * item.UnitPrice)
+                : (item.UnitPrice * count);
 
             return total;
         }
